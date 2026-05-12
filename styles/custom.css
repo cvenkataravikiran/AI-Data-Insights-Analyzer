@@ -1,0 +1,329 @@
+/* Modern Analytics Dashboard Styling */
+
+/* Global Styles */
+.main {
+    padding: 1.5rem 2rem;
+}
+
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    max-width: 1400px;
+}
+
+/* Typography */
+h1 {
+    color: #1e293b;
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    color: #334155;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+h3 {
+    color: #475569;
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Sidebar Styling */
+.css-1d391kg, [data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.css-1d391kg .css-1v0mbdj, [data-testid="stSidebar"] > div:first-child {
+    padding-top: 2rem;
+}
+
+/* Sidebar Title */
+[data-testid="stSidebar"] h1 {
+    color: #0f172a;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 0 1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Navigation Radio Buttons */
+[data-testid="stSidebar"] .row-widget.stRadio > div {
+    gap: 0.5rem;
+}
+
+[data-testid="stSidebar"] .row-widget.stRadio > div > label {
+    background: white;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-weight: 500;
+    color: #475569;
+}
+
+[data-testid="stSidebar"] .row-widget.stRadio > div > label:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    transform: translateX(2px);
+}
+
+[data-testid="stSidebar"] .row-widget.stRadio > div > label[data-baseweb="radio"] > div:first-child {
+    background-color: #3b82f6;
+}
+
+/* KPI Metric Cards */
+[data-testid="stMetric"] {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+[data-testid="stMetric"]:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    border-color: #cbd5e1;
+}
+
+[data-testid="stMetric"] label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+[data-testid="stMetric"] [data-testid="stMetricValue"] {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+[data-testid="stMetric"] [data-testid="stMetricDelta"] {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* Buttons */
+.stButton > button {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.625rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.stButton > button:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    transform: translateY(-1px);
+}
+
+.stButton > button:active {
+    transform: translateY(0);
+}
+
+/* Download Buttons */
+.stDownloadButton > button {
+    background: white;
+    color: #3b82f6;
+    border: 2px solid #3b82f6;
+    border-radius: 0.5rem;
+    padding: 0.625rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.stDownloadButton > button:hover {
+    background: #3b82f6;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* File Uploader */
+[data-testid="stFileUploader"] {
+    background: white;
+    border: 2px dashed #cbd5e1;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    transition: all 0.2s ease;
+}
+
+[data-testid="stFileUploader"]:hover {
+    border-color: #3b82f6;
+    background: #f8fafc;
+}
+
+/* DataFrames */
+[data-testid="stDataFrame"] {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Info/Warning/Error Boxes */
+.stAlert {
+    border-radius: 0.75rem;
+    border: none;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+[data-baseweb="notification"] {
+    border-radius: 0.75rem;
+    border-left-width: 4px;
+}
+
+/* Success Messages */
+.stSuccess {
+    background: #f0fdf4;
+    border-left-color: #22c55e;
+}
+
+/* Info Messages */
+.stInfo {
+    background: #eff6ff;
+    border-left-color: #3b82f6;
+}
+
+/* Warning Messages */
+.stWarning {
+    background: #fffbeb;
+    border-left-color: #f59e0b;
+}
+
+/* Error Messages */
+.stError {
+    background: #fef2f2;
+    border-left-color: #ef4444;
+}
+
+/* Expander */
+.streamlit-expanderHeader {
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    font-weight: 600;
+    color: #334155;
+}
+
+.streamlit-expanderHeader:hover {
+    border-color: #cbd5e1;
+}
+
+/* Tabs */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 0.5rem;
+    background: transparent;
+}
+
+.stTabs [data-baseweb="tab"] {
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    padding: 0.625rem 1.25rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.stTabs [data-baseweb="tab"]:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.stTabs [aria-selected="true"] {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+/* Selectbox */
+.stSelectbox > div > div {
+    border-radius: 0.5rem;
+    border-color: #e2e8f0;
+}
+
+/* Slider */
+.stSlider > div > div > div {
+    background: #e2e8f0;
+}
+
+.stSlider > div > div > div > div {
+    background: #3b82f6;
+}
+
+/* Checkbox */
+.stCheckbox {
+    padding: 0.5rem 0;
+}
+
+/* Spinner */
+.stSpinner > div {
+    border-top-color: #3b82f6;
+}
+
+/* Divider */
+hr {
+    margin: 2rem 0;
+    border: none;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Chart Container */
+.js-plotly-plot {
+    border-radius: 0.75rem;
+    background: white;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom Card Class */
+.card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+}
+
+/* Section Headers */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .block-container {
+        padding: 1rem;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    [data-testid="stMetric"] {
+        padding: 1rem;
+    }
+}
