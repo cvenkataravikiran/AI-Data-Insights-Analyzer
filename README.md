@@ -233,13 +233,13 @@ USE_OPENAI = "true"
 
 ## 🔮 Future Improvements
 
-- [ ] Add more ML models (ARIMA, Prophet, LSTM)
-- [ ] Implement user authentication
-- [ ] Add database integration (PostgreSQL, MongoDB)
-- [ ] Create custom report templates
-- [ ] Add email notification for insights
-- [ ] Implement real-time data streaming
-- [ ] Add more chart types (Sankey, Sunburst)
-- [ ] Multi-language support
-- [ ] Dark mode theme
-- [ ] API integration for external data sources
+- Add more ML models (ARIMA, Prophet, LSTM)
+- Implement user authentication
+- Add database integration (PostgreSQL, MongoDB)
+- Create custom report templates
+- Add email notification for insights
+- Implement real-time data streaming
+- Add more chart types (Sankey, Sunburst)
+- Multi-language support
+- Dark mode theme
+- API integration for external data sources
