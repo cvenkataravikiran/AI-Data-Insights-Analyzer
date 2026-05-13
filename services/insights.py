@@ -78,24 +78,24 @@ class InsightGenerator:
         # Prepare data summary for AI
         summary = self._prepare_data_summary()
         
-        prompt = f"""You are a data analyst. Analyze this business data and provide 5 concise, actionable insights.
+        prompt = f"""You are a data analyst. Analyze this dataset and provide 5 concise, actionable insights based on the data provided.
 
 Data Summary:
 {summary}
 
-Provide exactly 5 insights in this format:
-1. [Insight about top performer]
-2. [Insight about regional performance]
-3. [Insight about trends]
-4. [Insight about profitability]
-5. [Insight about categories/products]
+Provide exactly 5 insights about:
+1. Top performers or highest values
+2. Distribution patterns or comparisons
+3. Trends over time (if date data available)
+4. Relationships between metrics
+5. Notable patterns or anomalies
 
-Keep each insight to one sentence. Be specific with numbers and percentages."""
+Keep each insight to one sentence. Be specific with numbers and percentages from the data."""
 
         response = self.openai_client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a professional business data analyst providing concise insights."},
+                {"role": "system", "content": "You are a professional data analyst providing concise insights from any type of dataset."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=500,
@@ -117,9 +117,36 @@ Keep each insight to one sentence. Be specific with numbers and percentages."""
         return insights[:5] if insights else self._generate_rule_based_insights()
     
     def _prepare_data_summary(self):
-        """Prepare a concise data summary for AI"""
+        """Prepare a concise data summary for AI - works with ANY dataset"""
         summary_parts = []
         
+        # Basic dataset info
+        summary_parts.append(f"Dataset: {len(self.df)} rows, {len(self.df.columns)} columns")
+        
+        # Get all numeric columns
+        numeric_cols = self.df.select_dtypes(include=[np.number]).columns.tolist()
+        categorical_cols = self.df.select_dtypes(include=['object']).columns.tolist()
+        
+        # Summarize numeric columns
+        if numeric_cols:
+            summary_parts.append(f"\nNumeric Columns: {', '.join(numeric_cols)}")
+            for col in numeric_cols[:3]:  # Top 3 numeric columns
+                total = self.df[col].sum()
+                avg = self.df[col].mean()
+                max_val = self.df[col].max()
+                min_val = self.df[col].min()
+                summary_parts.append(f"{col}: Total={total:,.2f}, Avg={avg:,.2f}, Max={max_val:,.2f}, Min={min_val:,.2f}")
+        
+        # Summarize categorical columns with top values
+        if categorical_cols:
+            summary_parts.append(f"\nCategorical Columns: {', '.join(categorical_cols)}")
+            for col in categorical_cols[:3]:  # Top 3 categorical columns
+                top_values = self.df[col].value_counts().head(3)
+                if len(top_values) > 0:
+                    top_str = ', '.join([f"{val} ({count})" for val, count in top_values.items()])
+                    summary_parts.append(f"{col} - Top values: {top_str}")
+        
+        # If we have detected config columns, add specific insights
         sales_col = self.config.get('sales')
         profit_col = self.config.get('profit')
         product_col = self.config.get('product')
@@ -127,73 +154,98 @@ Keep each insight to one sentence. Be specific with numbers and percentages."""
         category_col = self.config.get('category')
         date_col = self.config.get('date')
         
-        # Total metrics
+        # Add relationship insights if we have the columns
         if sales_col and sales_col in self.df.columns:
-            total_sales = self.df[sales_col].sum()
-            summary_parts.append(f"Total Sales: ${total_sales:,.2f}")
+            if product_col and product_col in self.df.columns:
+                top_by_sales = self.df.groupby(product_col)[sales_col].sum().nlargest(3)
+                summary_parts.append(f"\nTop by {sales_col}: {', '.join([f'{p} ({s:,.0f})' for p, s in top_by_sales.items()])}")
+            
+            if region_col and region_col in self.df.columns:
+                region_totals = self.df.groupby(region_col)[sales_col].sum().sort_values(ascending=False)
+                summary_parts.append(f"By {region_col}: {', '.join([f'{r} ({s:,.0f})' for r, s in region_totals.items()])}")
         
-        if profit_col and profit_col in self.df.columns:
-            total_profit = self.df[profit_col].sum()
-            summary_parts.append(f"Total Profit: ${total_profit:,.2f}")
-            if sales_col and sales_col in self.df.columns:
-                margin = (total_profit / total_sales * 100) if total_sales > 0 else 0
-                summary_parts.append(f"Profit Margin: {margin:.1f}%")
-        
-        # Top performers
-        if product_col and product_col in self.df.columns and sales_col:
-            top_products = self.df.groupby(product_col)[sales_col].sum().nlargest(3)
-            summary_parts.append(f"Top 3 Products: {', '.join([f'{p} (${s:,.0f})' for p, s in top_products.items()])}")
-        
-        if region_col and region_col in self.df.columns and sales_col:
-            region_sales = self.df.groupby(region_col)[sales_col].sum().sort_values(ascending=False)
-            summary_parts.append(f"Regions: {', '.join([f'{r} (${s:,.0f})' for r, s in region_sales.items()])}")
-        
-        if category_col and category_col in self.df.columns and sales_col:
-            category_sales = self.df.groupby(category_col)[sales_col].sum().nlargest(3)
-            summary_parts.append(f"Top Categories: {', '.join([f'{c} (${s:,.0f})' for c, s in category_sales.items()])}")
-        
-        # Trend
-        if date_col and date_col in self.df.columns and sales_col:
+        # Trend analysis if date column exists
+        if date_col and date_col in self.df.columns and len(numeric_cols) > 0:
             try:
                 df_sorted = self.df.sort_values(date_col)
-                df_sorted['YearMonth'] = pd.to_datetime(df_sorted[date_col]).dt.to_period('M')
-                monthly_sales = df_sorted.groupby('YearMonth')[sales_col].sum()
-                if len(monthly_sales) >= 2:
-                    first_half = monthly_sales.iloc[:len(monthly_sales)//2].mean()
-                    second_half = monthly_sales.iloc[len(monthly_sales)//2:].mean()
+                df_sorted['Period'] = pd.to_datetime(df_sorted[date_col]).dt.to_period('M')
+                first_numeric = numeric_cols[0]
+                periodic_data = df_sorted.groupby('Period')[first_numeric].sum()
+                if len(periodic_data) >= 2:
+                    first_half = periodic_data.iloc[:len(periodic_data)//2].mean()
+                    second_half = periodic_data.iloc[len(periodic_data)//2:].mean()
                     change = ((second_half - first_half) / first_half * 100) if first_half > 0 else 0
                     trend = "increasing" if change > 0 else "decreasing"
-                    summary_parts.append(f"Trend: {trend} by {abs(change):.1f}%")
+                    summary_parts.append(f"\nTrend: {first_numeric} is {trend} by {abs(change):.1f}%")
             except:
                 pass
         
         return "\n".join(summary_parts)
     
     def _generate_rule_based_insights(self):
-        """Generate insights using rule-based logic (fallback)"""
+        """Generate insights using rule-based logic (fallback) - works with ANY dataset"""
         insights = []
         
+        # Get basic dataset info
+        numeric_cols = self.df.select_dtypes(include=[np.number]).columns.tolist()
+        categorical_cols = self.df.select_dtypes(include=['object']).columns.tolist()
+        
+        # Insight 1: Dataset overview
+        insights.append(f"Dataset contains {len(self.df):,} records with {len(numeric_cols)} numeric and {len(categorical_cols)} categorical columns.")
+        
+        # Insight 2: Top performer (using first categorical and first numeric)
         insight = self._get_top_performer_insight()
         if insight:
             insights.append(insight)
+        elif len(numeric_cols) > 0:
+            col = numeric_cols[0]
+            max_val = self.df[col].max()
+            avg_val = self.df[col].mean()
+            insights.append(f"The highest {col} value is {max_val:,.2f}, which is {((max_val/avg_val - 1) * 100):.1f}% above the average.")
         
+        # Insight 3: Distribution or regional insight
         insight = self._get_regional_insight()
         if insight:
             insights.append(insight)
+        elif len(categorical_cols) > 0 and len(numeric_cols) > 0:
+            cat_col = categorical_cols[0]
+            num_col = numeric_cols[0]
+            top_category = self.df.groupby(cat_col)[num_col].sum().idxmax()
+            top_value = self.df.groupby(cat_col)[num_col].sum().max()
+            total = self.df[num_col].sum()
+            pct = (top_value / total * 100) if total > 0 else 0
+            insights.append(f"'{top_category}' leads in {num_col} with {top_value:,.2f}, representing {pct:.1f}% of the total.")
         
+        # Insight 4: Trend insight
         insight = self._get_trend_insight()
         if insight:
             insights.append(insight)
+        elif len(numeric_cols) >= 2:
+            col1, col2 = numeric_cols[0], numeric_cols[1]
+            correlation = self.df[[col1, col2]].corr().iloc[0, 1]
+            if abs(correlation) > 0.5:
+                relationship = "strong positive" if correlation > 0 else "strong negative"
+                insights.append(f"There is a {relationship} correlation ({correlation:.2f}) between {col1} and {col2}.")
+            else:
+                insights.append(f"{col1} and {col2} show weak correlation ({correlation:.2f}), suggesting independent variation.")
         
+        # Insight 5: Profitability or category insight
         insight = self._get_profitability_insight()
+        if not insight:
+            insight = self._get_category_insight()
         if insight:
             insights.append(insight)
+        elif len(numeric_cols) > 0:
+            col = numeric_cols[0]
+            std_dev = self.df[col].std()
+            mean_val = self.df[col].mean()
+            cv = (std_dev / mean_val * 100) if mean_val > 0 else 0
+            if cv > 50:
+                insights.append(f"{col} shows high variability (CV: {cv:.1f}%), indicating significant differences across records.")
+            else:
+                insights.append(f"{col} shows consistent values (CV: {cv:.1f}%), indicating stable patterns across the dataset.")
         
-        insight = self._get_category_insight()
-        if insight:
-            insights.append(insight)
-        
-        return insights
+        return insights[:5]  # Return max 5 insights
     
     def _get_top_performer_insight(self):
         product_col = self.config.get('product')
