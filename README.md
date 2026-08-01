@@ -2,7 +2,6 @@
 
 <div align="center">
 
-![InsightLens AI Banner](https://via.placeholder.com/1200x300/3b82f6/ffffff?text=InsightLens+AI+-+Autonomous+Data+Analytics+Copilot)
 
 **Transform Raw Data into Actionable Business Intelligence using AI**
 
