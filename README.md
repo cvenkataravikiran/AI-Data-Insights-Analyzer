@@ -1,4 +1,4 @@
-# 🔮 InsightLens AI
+# 🔮 InsightLens AI - Autonomous Data Analytics Copilot
 
 <div align="center">
 
