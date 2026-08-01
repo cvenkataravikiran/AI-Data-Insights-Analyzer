@@ -210,11 +210,15 @@ Keep each insight to one sentence. Be specific with numbers and percentages from
         elif len(categorical_cols) > 0 and len(numeric_cols) > 0:
             cat_col = categorical_cols[0]
             num_col = numeric_cols[0]
-            top_category = self.df.groupby(cat_col)[num_col].sum().idxmax()
-            top_value = self.df.groupby(cat_col)[num_col].sum().max()
-            total = self.df[num_col].sum()
-            pct = (top_value / total * 100) if total > 0 else 0
-            insights.append(f"'{top_category}' leads in {num_col} with {top_value:,.2f}, representing {pct:.1f}% of the total.")
+            grouped = self.df.groupby(cat_col)[num_col].sum()
+            if len(grouped) > 0:  # Check if groupby result is not empty
+                top_category = grouped.idxmax()
+                top_value = grouped.max()
+                total = self.df[num_col].sum()
+                pct = (top_value / total * 100) if total > 0 else 0
+                insights.append(f"'{top_category}' leads in {num_col} with {top_value:,.2f}, representing {pct:.1f}% of the total.")
+            else:
+                insights.append(f"Dataset contains {len(self.df):,} records across {len(categorical_cols)} categorical columns.")
         
         # Insight 4: Trend insight
         insight = self._get_trend_insight()
@@ -257,8 +261,12 @@ Keep each insight to one sentence. Be specific with numbers and percentages from
             return None
         
         try:
-            top_product = self.df.groupby(product_col)[sales_col].sum().idxmax()
-            top_sales = self.df.groupby(product_col)[sales_col].sum().max()
+            grouped = self.df.groupby(product_col)[sales_col].sum()
+            if len(grouped) == 0:  # Check if groupby result is empty
+                return None
+            
+            top_product = grouped.idxmax()
+            top_sales = grouped.max()
             
             return f"The product '{top_product}' generated the highest revenue of ${top_sales:,.2f}, making it the top performer."
         except:
@@ -275,11 +283,14 @@ Keep each insight to one sentence. Be specific with numbers and percentages from
         
         try:
             region_sales = self.df.groupby(region_col)[sales_col].sum().sort_values(ascending=False)
+            if len(region_sales) == 0:  # Check if result is empty
+                return None
+            
             top_region = region_sales.index[0]
             top_sales = region_sales.iloc[0]
             
             total_sales = self.df[sales_col].sum()
-            percentage = (top_sales / total_sales) * 100
+            percentage = (top_sales / total_sales) * 100 if total_sales > 0 else 0
             
             return f"The {top_region} region leads with ${top_sales:,.2f} in sales, accounting for {percentage:.1f}% of total revenue."
         except:

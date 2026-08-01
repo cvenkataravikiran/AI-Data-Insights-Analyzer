@@ -40,7 +40,9 @@ env/
 Thumbs.db
 
 # Project specific
-exports/
+exports/*.pdf
+exports/*.html
+exports/*.csv
 datasets/*.csv
 datasets/*.xlsx
 *.log
@@ -50,4 +52,4 @@ datasets/*.xlsx
 
 # Environment variables
 .env
-.env.example
+.env.local

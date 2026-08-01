@@ -150,7 +150,10 @@ class DataAnalyzer:
             return "N/A"
         
         try:
-            top = self.df.groupby(product_col)[sales_col].sum().idxmax()
+            grouped = self.df.groupby(product_col)[sales_col].sum()
+            if len(grouped) == 0:
+                return "N/A"
+            top = grouped.idxmax()
             return top
         except:
             return "N/A"
@@ -184,7 +187,10 @@ class DataAnalyzer:
             return "N/A"
         
         try:
-            top = self.df.groupby(region_col)[sales_col].sum().idxmax()
+            grouped = self.df.groupby(region_col)[sales_col].sum()
+            if len(grouped) == 0:
+                return "N/A"
+            top = grouped.idxmax()
             return top
         except:
             return "N/A"
@@ -247,7 +253,10 @@ class DataAnalyzer:
             return "N/A"
         
         try:
-            top = self.df.groupby(category_col)[sales_col].sum().idxmax()
+            grouped = self.df.groupby(category_col)[sales_col].sum()
+            if len(grouped) == 0:
+                return "N/A"
+            top = grouped.idxmax()
             return top
         except:
             return "N/A"
