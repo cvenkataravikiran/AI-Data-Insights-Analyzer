@@ -583,40 +583,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 📞 Support & Contact
-
-### Get Help
-- 📖 **Documentation**: [docs/README.md](docs/README.md)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/yourusername/InsightLens-AI/discussions)
-- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/InsightLens-AI/issues)
-
-### Connect
-- 🌐 **Website**: [insightlens-ai.com](#)
----
-
-## 📸 Screenshots
-
----
-
-## 🎓 Learning Resources
-
-### Google Data Analytics Certificate
-This project demonstrates skills from the Google Data Analytics Professional Certificate:
-- Data cleaning and preparation
-- Data analysis and visualization
-- Statistical analysis and forecasting
-- Business intelligence reporting
-- Communication of insights
-
-### Tutorial Series
-- [Getting Started Guide](docs/getting-started.md)
-- [Data Cleaning Best Practices](docs/data-cleaning.md)
-- [Creating Custom KPIs](docs/custom-kpis.md)
-- [Advanced Forecasting](docs/forecasting.md)
-- [Report Customization](docs/reports.md)
-
----
-
 <div align="center">
 
 ### ⭐ Star this repository if InsightLens AI helped you!
